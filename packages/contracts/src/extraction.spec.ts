@@ -109,7 +109,7 @@ describe('shipmentExtractionSchema', () => {
 describe('shared extraction fixtures', () => {
   /**
    * The same files the Python suite validates against `ShipmentExtraction`
-   * (`apps/ai-service/tests/test_contract_fixtures.py`). Keeping both suites
+   * (`ai-service/tests/test_contract_fixtures.py`). Keeping both suites
    * on one set of examples is what stops the Zod schema and the Pydantic model
    * drifting apart.
    */

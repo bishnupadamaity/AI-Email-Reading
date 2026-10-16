@@ -21,8 +21,8 @@ export default tseslint.config(
       '**/*.tsbuildinfo',
       // The Python AI service: linted and formatted by Ruff, and its virtual
       // environment contains third-party JavaScript that is not ours.
-      'apps/ai-service/**',
-      'apps/web/vite.config.ts.timestamp-*',
+      'ai-service/**',
+      'frontend/vite.config.ts.timestamp-*',
     ],
   },
 
@@ -47,9 +47,9 @@ export default tseslint.config(
     },
   },
 
-  // Backend + worker + packages run on Node.
+  // Backend + packages run on Node.
   {
-    files: ['apps/api/**/*.ts', 'apps/worker/**/*.ts', 'packages/**/*.ts', '*.{js,mjs,cjs}'],
+    files: ['backend/**/*.ts', 'packages/**/*.ts', '*.{js,mjs,cjs}'],
     languageOptions: {
       globals: { ...globals.node },
     },
@@ -57,7 +57,7 @@ export default tseslint.config(
 
   // NestJS leans on decorators and parameter properties.
   {
-    files: ['apps/api/**/*.ts', 'apps/worker/**/*.ts'],
+    files: ['backend/**/*.ts'],
     rules: {
       '@typescript-eslint/no-extraneous-class': 'off',
       '@typescript-eslint/no-empty-function': ['error', { allow: ['constructors'] }],
@@ -71,7 +71,7 @@ export default tseslint.config(
 
   // Frontend runs in the browser.
   {
-    files: ['apps/web/**/*.{ts,tsx}'],
+    files: ['frontend/**/*.{ts,tsx}'],
     languageOptions: {
       globals: { ...globals.browser },
     },

@@ -4,7 +4,7 @@ JSON read by **both** test suites:
 
 - TypeScript — `packages/contracts/src/ai-service.spec.ts` and
   `extraction.spec.ts` validate every fixture against the Zod schemas.
-- Python — `apps/ai-service/tests/test_contract_fixtures.py` validates the same
+- Python — `ai-service/tests/test_contract_fixtures.py` validates the same
   files against the Pydantic models, and round-trips them to prove the
   serialised form is byte-identical to what it validated.
 

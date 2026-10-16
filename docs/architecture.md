@@ -10,43 +10,41 @@ review queue.
 schema, email ingestion and REST surface are implemented and verified.
 Extraction runs against a real provider (OpenAI) **synchronously**, inside the
 request: the NestJS API calls a dedicated Python service over internal HTTP.
-The queue path, attachment parsing, OCR, authentication, review workflows and
-the dashboard features are _not_ implemented.
+Attachment parsing, OCR, authentication, review workflows and the dashboard
+features are _not_ implemented.
 
 ## Applications and packages
 
-| Workspace                      | Language   | Responsibility                                                                 |
-| ------------------------------ | ---------- | ------------------------------------------------------------------------------ |
-| `apps/web`                     | TypeScript | React dashboard. Talks to the API over HTTP and nothing else.                  |
-| `apps/api`                     | TypeScript | REST endpoints, auth/authorization, business rules, persistence, job dispatch. |
-| `apps/ai-service`              | **Python** | Every AI operation: provider integration, model routing, extraction.           |
-| `apps/worker`                  | TypeScript | Consumes BullMQ jobs. No HTTP surface. Queued analysis not implemented.        |
-| `packages/contracts`           | TypeScript | Shared types and Zod schemas, including the internal AI contract.              |
-| `packages/document-processing` | TypeScript | Attachment parsing, OCR and file-validation abstractions.                      |
-| `packages/config`              | TypeScript | Environment loading and validation shared by the API and the worker.           |
+| Workspace             | Language   | Responsibility                                                       |
+| ---------------------- | ---------- | --------------------------------------------------------------------- |
+| `frontend`             | TypeScript | React dashboard. Talks to the API over HTTP and nothing else.         |
+| `backend`              | TypeScript | REST endpoints, auth/authorization, business rules, persistence.      |
+| `ai-service`           | **Python** | Every AI operation: provider integration, model routing, extraction.  |
+| `packages/contracts`   | TypeScript | Shared types and Zod schemas, including the internal AI contract.     |
+| `packages/config`      | TypeScript | Environment loading and validation shared by TypeScript workspaces.   |
 
-`apps/ai-service` is a Python package with its own `pyproject.toml`,
+`ai-service` is a Python package with its own `pyproject.toml`,
 `requirements.lock`, tests and tooling (pytest, Ruff, mypy). It is not part of
 the pnpm workspace and is independently runnable and testable — see
-[apps/ai-service/README.md](../apps/ai-service/README.md).
+[ai-service/README.md](../ai-service/README.md).
 
 ## Dependency rules
 
 ```
                  ┌──────────────┐
-                 │   apps/web   │   browser
+                 │   frontend   │   browser
                  └──────┬───────┘
                      HTTP │
-                 ┌──────▼───────┐        BullMQ / Redis      ┌───────────────┐
-                 │   apps/api   │ ─────────────────────────► │  apps/worker  │
-                 │   (NestJS)   │                            └───────┬───────┘
-                 └───┬──────┬───┘                                    │
-     internal HTTP │      │                                          │
-   ┌───────────────▼──┐   │        ┌─────────────────────┐           │
-   │ apps/ai-service  │   ├───────►│ packages/contracts  │◄──────────┘
+                 ┌──────▼───────┐
+                 │   backend    │
+                 │   (NestJS)   │
+                 └───┬──────┬───┘
+     internal HTTP │      │
+   ┌───────────────▼──┐   │        ┌─────────────────────┐
+   │   ai-service     │   ├───────►│ packages/contracts  │
    │ (Python/FastAPI) │   │        │ packages/config     │
    └────────┬─────────┘   ▼        └─────────────────────┘
-            │        PostgreSQL     packages/document-processing
+            │        PostgreSQL
             ▼
       OpenAI API
 ```
@@ -57,36 +55,30 @@ shared database connection, no shared file.
 
 Enforced boundaries:
 
-1. **Only `apps/ai-service` holds a provider credential.** The browser cannot
-   reach a provider, and neither can `apps/api`: the OpenAI key, the prompts
+1. **Only `ai-service` holds a provider credential.** The browser cannot
+   reach a provider, and neither can `backend`: the OpenAI key, the prompts
    and the model routing exist only in the Python service's configuration. The
    API's validated configuration has no `llm` or `models` section at all, which
    an integration test asserts.
 
-   > **This boundary moved twice.** The foundation kept `apps/api` free of AI
+   > **This boundary moved twice.** The foundation kept `backend` free of AI
    > entirely, on the rule that the API dispatches analysis rather than
    > performing it. The first AI slice made it synchronous and put the provider
    > _inside_ the API process (TypeScript, `packages/ai-workflows`). The AI
    > implementation is now Python, in its own service, and the API is back to
-   > delegating — synchronously, over HTTP, for now. When the BullMQ path
-   > lands, `AnalysisRunnerService` moves to `apps/worker` and calls the same
-   > Python endpoint; its claim/finish split is already shaped for that. Until
-   > then, an analysis request occupies a request thread for the duration of
-   > the model call.
+   > delegating — synchronously, over HTTP. An analysis request occupies a
+   > request thread for the duration of the model call.
 
 2. **No framework leaks into shared code.** `packages/contracts` imports Zod and
-   nothing else — no NestJS, no React. `apps/web` therefore consumes it safely.
+   nothing else — no NestJS, no React. `frontend` therefore consumes it safely.
 3. **No circular dependencies.** `contracts` depends on nothing internal; the
    applications depend on packages. Nothing depends on an application. The
    Python service depends on no TypeScript package: it re-declares the contract
    in Pydantic, and shared fixtures keep the two definitions honest.
-4. **The API, the worker and the AI service are independently executable.** The
+4. **The API and the AI service are independently executable.** The
    TypeScript applications share _packages_, never modules; the Python service
    shares nothing but the HTTP contract. Each has its own entry point,
    configuration schema and lifecycle.
-5. **The queue contract is shared, not duplicated.** Job names and payload
-   schemas live in `packages/contracts/src/jobs.ts`, so the producer
-   (`apps/api`) and the consumer (`apps/worker`) cannot drift apart.
 
 ## Module format: ESM
 
@@ -98,7 +90,7 @@ consequences visible throughout the code:
   this is the emitted path, as Node ESM requires fully specified specifiers.
 - `__dirname` does not exist; `import.meta.dirname` is used instead.
 
-`apps/web` is bundled by Vite and uses `moduleResolution: "bundler"`; the
+`frontend` is bundled by Vite and uses `moduleResolution: "bundler"`; the
 Node-side workspaces use `module`/`moduleResolution: "node16"`, which honours
 the `exports` field of each workspace package.
 
@@ -115,20 +107,19 @@ them.
 
 Every process validates its environment once, at startup:
 
-- `apps/api` → `src/config/env.schema.ts` (Zod, via `loadEnv()` from
+- `backend` → `src/config/env.schema.ts` (Zod, via `loadEnv()` from
   `packages/config`)
-- `apps/worker` → `src/config/env.schema.ts` (same)
-- `apps/ai-service` → `ai_service/config.py` (pydantic-settings, with the same
+- `ai-service` → `ai_service/config.py` (pydantic-settings, with the same
   upward search for the root `.env` and the same precedence rule: values
   already in the process environment win over the file)
 
 A misconfigured process fails immediately with a readable list of problems
 rather than at the first request. A single `.env` at the repository root serves
-every workspace, including Vite (`envDir: '../../'`) and the Python service.
+every workspace, including Vite (`envDir: '../'`) and the Python service.
 
 Variables are owned by exactly one process. `LLM_*` and `OPENAI_*` belong to
-`apps/ai-service`; `AI_SERVICE_ENABLED`, `AI_SERVICE_URL` and the two timeouts
-belong to `apps/api`; `AI_SERVICE_HOST`, `AI_SERVICE_PORT` and
+`ai-service`; `AI_SERVICE_ENABLED`, `AI_SERVICE_URL` and the two timeouts
+belong to `backend`; `AI_SERVICE_HOST`, `AI_SERVICE_PORT` and
 `AI_SERVICE_TOKEN` are read by the AI service, with the API reading the token
 too because it has to present it. Nothing reads a variable it does not own.
 
@@ -152,34 +143,14 @@ Two entities exist: `Email` and `Analysis`. See
 [data-model.md](./data-model.md) for columns, the de-duplication index, the
 one-in-flight-analysis guarantee and the status transitions.
 
-## Background processing
-
-`apps/api` publishes jobs through `JobsService`; `apps/worker` consumes them in
-`QueueWorkerService` and dispatches to `EmailAnalysisProcessor`.
-
-The API constructs its queue **on first use** rather than at startup: BullMQ
-opens its Redis connection eagerly, so building it during DI would make the API
-unstartable — and extremely noisy — whenever Redis is down, including during
-front-end-only development.
-
-The worker shuts down gracefully: `SIGINT`/`SIGTERM` trigger Nest's shutdown
-hooks, which close the BullMQ worker and wait up to
-`WORKER_SHUTDOWN_TIMEOUT_MS` for in-flight jobs before forcing the close.
-
-`EmailAnalysisProcessor` currently validates the payload, logs it and returns
-`{ status: 'skipped' }`. That is deliberate: the queue is observably wired
-without pretending analysis happened. When the queued path is implemented the
-worker calls the same AI service endpoint the API calls today; nothing about
-the AI service changes.
-
 ## Not yet implemented
 
-Asynchronous processing via BullMQ · the `classification`, `summarization` and
+Asynchronous/queued analysis · the `classification`, `summarization` and
 `conflict_resolution` operations (models configured and validated in the AI
 service, no caller) ·
 PDF, image and spreadsheet parsing · OCR · the human review queue · business
 records and audit history · authentication and authorization · the dashboard
-features under `apps/web/src/features/`.
+features under `frontend/src/features/`.
 
 Directories for these carry a `.gitkeep` describing their intent; none contains
 stub code that could be mistaken for working functionality.
@@ -198,14 +169,12 @@ There are none left on the AI path. The TypeScript AI package declared
 `@langchain/langgraph` and `@langchain/core` before any code imported them;
 both left with it. The Python service deliberately does **not** take a graph
 dependency: one operation, called once per email, needs no graph orchestration,
-and LangGraph can be added when a workflow actually branches. `apps/worker`
-still declares `@email-ai/document-processing` ahead of use, for attachment
-parsing.
+and LangGraph can be added when a workflow actually branches.
 
 ## AI integration
 
 One provider, one port, one model per operation — all of it in
-`apps/ai-service`, none of it in TypeScript.
+`ai-service`, none of it in TypeScript.
 
 ### The internal HTTP contract
 
@@ -249,7 +218,7 @@ thinking", and a short combined deadline would abort every healthy extraction.
 
 ### Who owns what
 
-`apps/ai-service` owns:
+`ai-service` owns:
 
 - `ModelRegistry` — the only place that knows model identifiers. It maps each
   AI operation to a model, validates the whole table at startup, and exposes
@@ -268,7 +237,7 @@ thinking", and a short combined deadline would abort every healthy extraction.
 - `verify_extraction_integrity` — deterministic post-checks, no model involved.
 - The prompt, in `prompts/`, outside any route or adapter.
 
-`apps/api` owns the lifecycle: the atomic claim, the single terminal
+`backend` owns the lifecycle: the atomic claim, the single terminal
 transition, idempotency, the one-in-flight guarantee, boundary validation of
 the AI service's response, failure-code mapping and persistence.
 

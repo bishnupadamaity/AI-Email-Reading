@@ -13,7 +13,7 @@ import { analysisFailureCodeSchema } from './analyses.js';
  * Cross-language contract tests.
  *
  * Every fixture here is also read by the Python suite
- * (`apps/ai-service/tests/test_contract_fixtures.py`), which validates the
+ * (`ai-service/tests/test_contract_fixtures.py`), which validates the
  * same files against the Pydantic models. A field renamed, re-cased, made
  * non-nullable or dropped on either side fails the other side's suite — which
  * is the point: nothing else forces the Zod schemas and the Pydantic models to

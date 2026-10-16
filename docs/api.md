@@ -133,7 +133,7 @@ request is held for the duration of the model call (bounded by the AI service's
 `LLM_TIMEOUT_MS`, and by the API's `AI_SERVICE_REQUEST_TIMEOUT_MS` above it).
 Takes no body.
 
-The extraction itself happens in the Python AI service (`apps/ai-service`); the
+The extraction itself happens in the Python AI service (`ai-service`); the
 API sends the stored email, validates what comes back and persists it. Requires
 both sides configured — see [Configuring AI](#configuring-ai).
 
@@ -280,25 +280,21 @@ answered. All of them stay `null` for an analysis that has not run.
 Unversioned liveness and readiness probes. `ready` reports each dependency as
 `up`, `down` or `disabled` and responds `503` if an enabled one is unreachable.
 
-Redis is intentionally absent from `ready`: the queue connection is opened on
-first dispatch, so probing it here would create the connection purely to test
-it. It joins the list when the queue is on a request path.
-
 ## Configuring AI
 
-AI runs in `apps/ai-service` (Python/FastAPI), on OpenAI's **Responses API**
+AI runs in `ai-service` (Python/FastAPI), on OpenAI's **Responses API**
 with Structured Outputs. The API calls it over an internal HTTP contract and
 holds no provider credential, no model name and no prompt.
 
 In your `.env`:
 
 ```bash
-# apps/api — where to find the AI service
+# backend — where to find the AI service
 AI_SERVICE_ENABLED=true
 AI_SERVICE_URL=http://127.0.0.1:8000
 AI_SERVICE_TOKEN=                # optional on loopback; required otherwise
 
-# apps/ai-service — the provider
+# ai-service — the provider
 LLM_PROVIDER=openai
 OPENAI_API_KEY=sk-...            # LLM_API_KEY is accepted as a fallback
 ```
@@ -312,20 +308,20 @@ Tuning knobs:
 
 | Variable                        | Owned by   | Purpose                                                     |
 | ------------------------------- | ---------- | ----------------------------------------------------------- |
-| `AI_SERVICE_REQUEST_TIMEOUT_MS` | `apps/api` | Deadline for the AI service to answer. Above the one below. |
-| `AI_SERVICE_CONNECT_TIMEOUT_MS` | `apps/api` | Deadline for reaching it at all.                            |
+| `AI_SERVICE_REQUEST_TIMEOUT_MS` | `backend` | Deadline for the AI service to answer. Above the one below. |
+| `AI_SERVICE_CONNECT_TIMEOUT_MS` | `backend` | Deadline for reaching it at all.                            |
 | `LLM_TIMEOUT_MS`                | AI service | Deadline for the model call.                                |
 | `LLM_MAX_OUTPUT_TOKENS`         | AI service | Output ceiling.                                             |
 | `LLM_MAX_RETRIES`               | AI service | SDK retries on 429/5xx.                                     |
 | `LLM_MAX_INPUT_CHARS`           | AI service | Prompt ceiling; oversized input is rejected.                |
-| `LLM_STALE_PROCESSING_MS`       | `apps/api` | When a `processing` analysis may be reclaimed.              |
+| `LLM_STALE_PROCESSING_MS`       | `backend` | When a `processing` analysis may be reclaimed.              |
 
 All are documented in [.env.example](../.env.example).
 
 ### One model per operation
 
 There is no global model setting. Each AI operation routes to its own model
-through the registry in `apps/ai-service`, and each is overridable:
+through the registry in `ai-service`, and each is overridable:
 
 | Operation             | Variable                           | Default       | Status                    |
 | --------------------- | ---------------------------------- | ------------- | ------------------------- |
@@ -365,7 +361,7 @@ because the two services are deployed together.
 Request and response schemas live in `packages/contracts/src/ai-service.ts`
 (Zod) and `ai_service/models/wire.py` (Pydantic), with shared fixtures in
 `test/fixtures/ai-service/` validated by both test suites. See
-[apps/ai-service/README.md](../apps/ai-service/README.md) for the full
+[ai-service/README.md](../ai-service/README.md) for the full
 description and [architecture.md](./architecture.md#the-internal-http-contract)
 for how statuses map onto analysis failure codes.
 

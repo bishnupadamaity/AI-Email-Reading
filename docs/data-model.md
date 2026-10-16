@@ -7,7 +7,7 @@
 ## Principles
 
 - The schema is owned by explicit migrations in
-  `apps/api/src/database/migrations/`. `synchronize` is permanently `false` and
+  `backend/src/database/migrations/`. `synchronize` is permanently `false` and
   `migrationsRun` is `false`; migrations are applied on demand.
 - Analysis output is kept separate from the email it describes, so re-running a
   workflow never mutates the source record and history is preserved.
@@ -81,7 +81,7 @@ removes its analyses rather than orphaning them.
 `extracted_data` and `validation_errors` are `jsonb` rather than columns, but
 they are not untyped: their shape is `shipmentExtractionSchema` and
 `validationIssueSchema` from `packages/contracts`, mirrored in Pydantic by
-`apps/ai-service` and validated on the way in. The API writes
+`ai-service` and validated on the way in. The API writes
 `extracted_data` only after that validation passes, so a row either holds a
 document satisfying the contract or holds `null`.
 

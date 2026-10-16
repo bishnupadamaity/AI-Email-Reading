@@ -7,4 +7,4 @@ pnpm-lock.yaml
 .env.*
 # Python service: formatted by Ruff, and its virtual environment is not ours.
 .venv/
-apps/ai-service/
+ai-service/

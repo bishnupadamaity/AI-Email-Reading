@@ -5,7 +5,7 @@ import { idSchema, isoTimestampSchema } from './common.js';
 import { shipmentExtractionSchema } from './extraction.js';
 
 /**
- * Internal HTTP contract between `apps/api` (NestJS) and `apps/ai-service`
+ * Internal HTTP contract between `backend` (NestJS) and `ai-service`
  * (Python/FastAPI).
  *
  * Mirrored on the Python side by `ai_service/models/wire.py`, and pinned by the
