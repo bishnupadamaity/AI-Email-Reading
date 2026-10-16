@@ -1,0 +1,1 @@
+# Explicit TypeORM migrations only; generate with `pnpm --filter @email-ai/api migration:generate`.

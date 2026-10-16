@@ -1,0 +1,21 @@
+{
+  "classification": "shipment_booking",
+  "summary": "The vessel is expected to arrive mid-March.",
+  "supplierOrganization": { "value": "Northwind Trading", "evidence": "Northwind Trading" },
+  "shipmentReference": { "value": "order 7719", "evidence": "order 7719" },
+  "originPort": { "value": null, "evidence": null },
+  "destinationPort": { "value": null, "evidence": null },
+  "containerNumber": { "value": null, "evidence": null },
+  "billOfLadingNumber": { "value": null, "evidence": null },
+  "shippingLine": { "value": null, "evidence": null },
+  "vesselName": { "value": null, "evidence": null },
+  "voyageNumber": { "value": null, "evidence": null },
+  "estimatedDeparture": {
+    "value": "next sailing",
+    "evidence": "go out on the next available sailing"
+  },
+  "estimatedArrival": { "value": "mid-March", "evidence": "arriving mid-March" },
+  "freeTime": { "value": "14 days at destination", "evidence": "14 days free time at destination" },
+  "missingFields": [{ "field": "containerNumber", "reason": "not stated" }],
+  "conflicts": []
+}

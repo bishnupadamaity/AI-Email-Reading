@@ -1,0 +1,36 @@
+{
+  "name": "@email-ai/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared types and runtime validation schemas. No framework imports.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "typecheck": "tsc -b tsconfig.json",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@jest/globals": "30.5.2",
+    "@types/jest": "30.0.0",
+    "@types/node": "26.6.5",
+    "jest": "30.5.2",
+    "ts-jest": "29.4.14",
+    "typescript": "6.0.3"
+  }
+}

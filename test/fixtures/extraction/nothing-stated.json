@@ -1,0 +1,21 @@
+{
+  "classification": "general_inquiry",
+  "summary": "The sender confirms the order will ship on the next available sailing.",
+  "supplierOrganization": { "value": null, "evidence": null },
+  "shipmentReference": { "value": null, "evidence": null },
+  "originPort": { "value": null, "evidence": null },
+  "destinationPort": { "value": null, "evidence": null },
+  "containerNumber": { "value": null, "evidence": null },
+  "billOfLadingNumber": { "value": null, "evidence": null },
+  "shippingLine": { "value": null, "evidence": null },
+  "vesselName": { "value": null, "evidence": null },
+  "voyageNumber": { "value": null, "evidence": null },
+  "estimatedDeparture": { "value": null, "evidence": null },
+  "estimatedArrival": { "value": null, "evidence": null },
+  "freeTime": { "value": null, "evidence": null },
+  "missingFields": [
+    { "field": "containerNumber", "reason": "the forwarder has not confirmed the booking" },
+    { "field": "estimatedDeparture", "reason": null }
+  ],
+  "conflicts": []
+}

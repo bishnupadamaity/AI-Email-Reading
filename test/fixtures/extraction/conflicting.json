@@ -1,0 +1,29 @@
+{
+  "classification": "shipment_update",
+  "summary": "The email states two different containers and two different arrival dates.",
+  "supplierOrganization": { "value": "Global Freight", "evidence": "Global Freight" },
+  "shipmentReference": { "value": "GF-5521", "evidence": "reference GF-5521" },
+  "originPort": { "value": "Hamburg", "evidence": "ex Hamburg" },
+  "destinationPort": { "value": null, "evidence": null },
+  "containerNumber": { "value": null, "evidence": null },
+  "billOfLadingNumber": { "value": null, "evidence": null },
+  "shippingLine": { "value": null, "evidence": null },
+  "vesselName": { "value": null, "evidence": null },
+  "voyageNumber": { "value": null, "evidence": null },
+  "estimatedDeparture": { "value": null, "evidence": null },
+  "estimatedArrival": { "value": null, "evidence": null },
+  "freeTime": { "value": null, "evidence": null },
+  "missingFields": [{ "field": "billOfLadingNumber", "reason": "not stated" }],
+  "conflicts": [
+    {
+      "field": "containerNumber",
+      "values": ["TGHU1234567", "TGHU7654321"],
+      "note": "booking confirmation and warehouse paperwork disagree"
+    },
+    {
+      "field": "estimatedArrival",
+      "values": ["2026-04-11", "2026-04-18"],
+      "note": null
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "status": "failed",
+  "extraction": null,
+  "validationErrors": null,
+  "failureCode": "rate_limited",
+  "failureMessage": "The provider rate-limited this request.",
+  "operation": {
+    "operation": "extraction",
+    "provider": "openai",
+    "model": "gpt-6-sol",
+    "status": "failed",
+    "failureCode": "rate_limited",
+    "inputTokens": null,
+    "outputTokens": null,
+    "cachedInputTokens": null,
+    "reasoningTokens": null,
+    "latencyMs": 318,
+    "stopReason": null,
+    "completedAt": "2026-02-02T08:20:05.210+00:00"
+  }
+}

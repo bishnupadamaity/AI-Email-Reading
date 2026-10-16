@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "email-ai-ai-service"
+version = "0.1.0"
+description = "AI service: OpenAI provider integration, operation-to-model routing and structured email extraction."
+readme = "README.md"
+requires-python = ">=3.11"
+
+# Direct dependencies are pinned exactly; `requirements.lock` pins the full
+# transitive closure. Install from the lock file for a reproducible
+# environment, and from this file only when deliberately resolving anew.
+dependencies = [
+  "fastapi==0.143.2",
+  "openai==3.31.0",
+  "pydantic==2.14.1",
+  "pydantic-settings==2.16.0",
+  "uvicorn==0.54.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "httpx==0.28.1",
+  "mypy==2.4.0",
+  "pytest==9.1.1",
+  "pytest-asyncio==1.4.0",
+  "ruff==0.17.1",
+]
+
+[project.scripts]
+ai-service = "ai_service.main:run"
+
+[tool.setuptools.packages.find]
+include = ["ai_service*"]
+
+# --- Ruff: linting and formatting ------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["."]
+
+[tool.ruff.lint]
+select = [
+  "E",    # pycodestyle errors
+  "W",    # pycodestyle warnings
+  "F",    # pyflakes
+  "I",    # import sorting
+  "N",    # pep8 naming
+  "UP",   # pyupgrade
+  "B",    # bugbear
+  "C4",   # comprehensions
+  "SIM",  # simplify
+  "RUF",  # ruff-specific
+  "ANN",  # missing annotations
+  "ASYNC",
+  "S",    # bandit (security)
+  "T20",  # no print()
+  "PT",   # pytest style
+  "TID",  # tidy imports
+]
+ignore = [
+  # The service's own request/response contract is camelCase on the wire; the
+  # Python attributes stay snake_case and carry aliases, so this never fires
+  # on a real attribute name — see models/.
+  "ANN401", # typing.Any is deliberate where the provider returns unvalidated output
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests assert with bare asserts, and carry fixture credentials that are not
+# credentials.
+"tests/**" = ["S101", "S105", "S106"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+# --- mypy -------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unreachable = true
+files = ["ai_service", "tests"]
+
+# --- pytest -----------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --strict-markers --strict-config"
+# Async tests are the norm here: the provider and the services are async.
+asyncio_mode = "auto"

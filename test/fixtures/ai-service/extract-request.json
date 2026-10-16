@@ -1,0 +1,10 @@
+{
+  "operation": "extraction",
+  "email": {
+    "id": "28c76809-9dbf-481e-8237-e02c0bfba0e8",
+    "sender": "Acme Logistics <dispatch@acme-logistics.example>",
+    "subject": "Shipment confirmation - PO 4821 / container MSCU7654321",
+    "receivedAt": "2026-02-02T08:14:00.000Z",
+    "bodyText": "Container MSCU7654321 departs Rotterdam 2026-02-02 for Singapore, ETA 2026-02-24."
+  }
+}

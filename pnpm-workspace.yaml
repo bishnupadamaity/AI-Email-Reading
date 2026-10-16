@@ -1,0 +1,14 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# Native accelerators and telemetry that are optional for this stack; keeping
+# their install scripts blocked makes installs hermetic and reproducible.
+allowBuilds:
+  '@parcel/watcher': false
+  '@scarf/scarf': false
+  msgpackr-extract: false
+  unrs-resolver: false
+
+minimumReleaseAgeExclude:
+  - undici@8.12.2

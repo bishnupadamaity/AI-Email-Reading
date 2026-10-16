@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+pnpm-lock.yaml
+*.tsbuildinfo
+.env
+.env.*
+# Python service: formatted by Ruff, and its virtual environment is not ours.
+.venv/
+apps/ai-service/

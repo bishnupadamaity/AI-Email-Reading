@@ -1,0 +1,18 @@
+{
+  "classification": "shipment_update",
+  "summary": "Container MSCU7654321 departed Rotterdam for Singapore.",
+  "supplierOrganization": { "value": "Acme Logistics", "evidence": "Acme Logistics" },
+  "shipmentReference": { "value": "PO 4821", "evidence": "order PO 4821" },
+  "originPort": { "value": "Rotterdam", "evidence": "Port of load:   Rotterdam (NLRTM)" },
+  "destinationPort": { "value": "Singapore", "evidence": "Port of discharge: Singapore (SGSIN)" },
+  "containerNumber": { "value": "MSCU7654321", "evidence": "Container:      MSCU7654321" },
+  "billOfLadingNumber": { "value": "ACME-BL-558201", "evidence": "Bill of lading: ACME-BL-558201" },
+  "shippingLine": { "value": null, "evidence": null },
+  "vesselName": { "value": "MV Northern Star", "evidence": "MV Northern Star, voyage 118E" },
+  "voyageNumber": { "value": "118E", "evidence": "voyage 118E" },
+  "estimatedDeparture": { "value": "2026-02-02", "evidence": "Departed:       2 February 2026" },
+  "estimatedArrival": { "value": "2026-02-24", "evidence": "ETA:            24 February 2026" },
+  "freeTime": { "value": null, "evidence": null },
+  "missingFields": [{ "field": "shippingLine", "reason": "not stated in the email" }],
+  "conflicts": []
+}

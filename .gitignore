@@ -1,0 +1,47 @@
+# dependencies
+node_modules/
+.pnpm-store/
+# Python virtual environment for apps/ai-service (recreate from
+# requirements.lock; see apps/ai-service/README.md).
+.venv/
+
+# build output
+dist/
+build/
+*.tsbuildinfo
+
+# environment / secrets
+.env
+.env.*
+!.env.example
+
+# test & coverage
+coverage/
+*.lcov
+
+# logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# caches
+.cache/
+.eslintcache
+.vite/
+.turbo/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# local uploads / scratch data
+uploads/
+tmp/
+
+# editors & OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json

@@ -1,0 +1,26 @@
+{
+  "status": "failed",
+  "extraction": null,
+  "validationErrors": [
+    {
+      "path": "containerNumber",
+      "message": "\"containerNumber\" is reported as conflicting, but a single value was also recorded. Conflicting evidence must be preserved for review, not resolved."
+    }
+  ],
+  "failureCode": "invalid_output",
+  "failureMessage": "The model returned a self-contradictory extraction; conflicting evidence must be preserved, not resolved.",
+  "operation": {
+    "operation": "extraction",
+    "provider": "openai",
+    "model": "gpt-6-sol-2026-09-01",
+    "status": "succeeded",
+    "failureCode": null,
+    "inputTokens": 1234,
+    "outputTokens": 567,
+    "cachedInputTokens": 128,
+    "reasoningTokens": 64,
+    "latencyMs": 4210,
+    "stopReason": "completed",
+    "completedAt": "2026-02-02T08:20:05.210+00:00"
+  }
+}

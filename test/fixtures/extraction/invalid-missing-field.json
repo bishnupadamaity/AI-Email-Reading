@@ -1,0 +1,17 @@
+{
+  "classification": "shipment_update",
+  "summary": "Rejected by both suites: containerNumber is absent entirely, which is not the same as null.",
+  "supplierOrganization": { "value": null, "evidence": null },
+  "shipmentReference": { "value": null, "evidence": null },
+  "originPort": { "value": null, "evidence": null },
+  "destinationPort": { "value": null, "evidence": null },
+  "billOfLadingNumber": { "value": null, "evidence": null },
+  "shippingLine": { "value": null, "evidence": null },
+  "vesselName": { "value": null, "evidence": null },
+  "voyageNumber": { "value": null, "evidence": null },
+  "estimatedDeparture": { "value": null, "evidence": null },
+  "estimatedArrival": { "value": null, "evidence": null },
+  "freeTime": { "value": null, "evidence": null },
+  "missingFields": [],
+  "conflicts": []
+}
