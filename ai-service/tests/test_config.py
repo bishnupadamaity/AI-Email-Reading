@@ -80,6 +80,41 @@ class TestCredentials:
         assert "sk-secret-value" not in str(settings.model_dump())
 
 
+class TestLangSmith:
+    def test_tracing_is_off_by_default(self, settings_factory: SettingsFactory) -> None:
+        settings = settings_factory()
+
+        assert settings.langsmith_tracing is False
+        assert settings.langsmith_configured is False
+
+    def test_requires_both_the_flag_and_a_key(self, settings_factory: SettingsFactory) -> None:
+        assert settings_factory(langsmith_tracing=True).langsmith_configured is False
+        assert (
+            settings_factory(langsmith_api_key="ls-test-not-a-real-key").langsmith_configured
+            is False
+        )
+
+    def test_is_configured_once_both_are_set(self, settings_factory: SettingsFactory) -> None:
+        settings = settings_factory(
+            langsmith_tracing=True, langsmith_api_key="ls-test-not-a-real-key"
+        )
+
+        assert settings.langsmith_configured is True
+
+    def test_treats_an_empty_key_as_unset(self, settings_factory: SettingsFactory) -> None:
+        settings = settings_factory(langsmith_tracing=True, langsmith_api_key="   ")
+
+        assert settings.langsmith_configured is False
+
+    def test_never_puts_the_key_in_a_repr_or_a_dump(
+        self, settings_factory: SettingsFactory
+    ) -> None:
+        settings = settings_factory(langsmith_api_key="ls-secret-value")
+
+        assert "ls-secret-value" not in repr(settings)
+        assert "ls-secret-value" not in str(settings.model_dump())
+
+
 class TestModelOverrides:
     def test_passes_only_pinned_operations_to_the_registry(
         self, settings_factory: SettingsFactory
@@ -209,6 +244,37 @@ class TestUnconfiguredProvider:
 
         with pytest.raises(ModelConfigurationError, match="OPENAI_MODEL_SUMMARIZATION"):
             create_provider(settings_factory(openai_model_summarization="  "))
+
+
+class TestLangSmithWiring:
+    def test_builds_a_provider_when_tracing_is_enabled(
+        self, settings_factory: SettingsFactory
+    ) -> None:
+        # `wrap_openai` only monkey-patches the client's methods; it makes no
+        # network call on its own, so this exercises the real wiring with no
+        # credential ever leaving the process.
+        settings = settings_factory(
+            llm_provider="openai",
+            openai_api_key="sk-test-not-a-real-key",
+            langsmith_tracing=True,
+            langsmith_api_key="ls-test-not-a-real-key",
+        )
+
+        provider = create_provider(settings)
+
+        assert provider.name == "openai"
+        assert provider.describe_routing() == dict(DEFAULT_OPERATION_MODELS)
+
+    def test_warns_instead_of_failing_when_tracing_is_on_without_a_key(
+        self, settings_factory: SettingsFactory
+    ) -> None:
+        settings = settings_factory(
+            llm_provider="openai", openai_api_key="sk-test-not-a-real-key", langsmith_tracing=True
+        )
+
+        provider = create_provider(settings)
+
+        assert provider.name == "openai"
 
 
 class TestCaching:

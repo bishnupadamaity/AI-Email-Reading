@@ -17,6 +17,8 @@ from dataclasses import dataclass
 from typing import Any, Protocol, cast
 
 import openai
+from langsmith import Client as LangSmithClient
+from langsmith.wrappers import wrap_openai
 from openai import AsyncOpenAI
 from pydantic import BaseModel, ValidationError
 
@@ -49,6 +51,13 @@ class OpenAiProviderOptions:
     #: than truncated — a silently shortened email produces a confidently
     #: wrong result, which is worse than a visible failure.
     max_input_chars: int
+    #: Off by default. When on, every call is traced to LangSmith — prompt,
+    #: completion and all — so this is strictly opt-in.
+    langsmith_tracing: bool = False
+    #: Never logged, never returned.
+    langsmith_api_key: str | None = None
+    langsmith_project: str = "email-ai-platform"
+    langsmith_endpoint: str = ""
 
 
 class ResponsesNamespace(Protocol):
@@ -84,14 +93,30 @@ class OpenAiStructuredProvider:
         self._options = options
         self._registry = registry
         self._client: ResponsesClient = client or cast(
-            "ResponsesClient",
-            AsyncOpenAI(
-                api_key=options.api_key,
-                # The OpenAI SDK takes seconds.
-                timeout=options.timeout_ms / 1_000,
-                max_retries=options.max_retries,
-            ),
+            "ResponsesClient", self._build_sdk_client(options)
         )
+
+    @staticmethod
+    def _build_sdk_client(options: OpenAiProviderOptions) -> AsyncOpenAI:
+        sdk_client = AsyncOpenAI(
+            api_key=options.api_key,
+            # The OpenAI SDK takes seconds.
+            timeout=options.timeout_ms / 1_000,
+            max_retries=options.max_retries,
+        )
+
+        if not options.langsmith_tracing:
+            return sdk_client
+
+        # A `Client` is built explicitly from `options` rather than letting the
+        # SDK read `LANGSMITH_API_KEY`/`LANGSMITH_ENDPOINT` off the process
+        # environment, so tracing configuration flows through `Settings` like
+        # everything else in this adapter.
+        ls_client = LangSmithClient(
+            api_key=options.langsmith_api_key,
+            api_url=options.langsmith_endpoint or None,
+        )
+        return wrap_openai(sdk_client, tracing_extra={"client": ls_client})
 
     def describe_routing(self) -> dict[AiOperation, str]:
         return self._registry.describe()
@@ -112,14 +137,24 @@ class OpenAiStructuredProvider:
 
         started_at = monotonic_ms()
 
+        call_kwargs: dict[str, Any] = {
+            "model": model,
+            "instructions": request.system,
+            "input": request.user_content,
+            "max_output_tokens": self._options.max_output_tokens,
+            "text_format": request.text_format,
+        }
+        if self._options.langsmith_tracing:
+            # Routing only, mirroring `_log_call` elsewhere: never the prompt
+            # or the email content as a *tag*, since tags are indexed and
+            # searchable — the traced inputs/outputs carry that already.
+            call_kwargs["langsmith_extra"] = {
+                "project_name": self._options.langsmith_project,
+                "metadata": {"operation": request.operation},
+            }
+
         try:
-            response = await self._client.responses.parse(
-                model=model,
-                instructions=request.system,
-                input=request.user_content,
-                max_output_tokens=self._options.max_output_tokens,
-                text_format=request.text_format,
-            )
+            response = await self._client.responses.parse(**call_kwargs)
         except Exception as error:  # every failure is translated below
             raise self._translate(
                 error, request.operation, model, monotonic_ms() - started_at

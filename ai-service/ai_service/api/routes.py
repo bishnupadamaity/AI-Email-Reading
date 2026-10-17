@@ -72,7 +72,10 @@ def readiness(
     # configured, not as verified.
     return ReadinessResponse(
         status="ok",
-        dependencies={"provider": "up" if settings.ai_configured else "disabled"},
+        dependencies={
+            "provider": "up" if settings.ai_configured else "disabled",
+            "tracing": "up" if settings.langsmith_configured else "disabled",
+        },
         models={str(operation): model for operation, model in routing.items()},
         implemented_operations=sorted(IMPLEMENTED_OPERATIONS),
         timestamp=utc_now_iso(),

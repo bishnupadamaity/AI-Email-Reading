@@ -74,6 +74,10 @@ variable names are unchanged from the TypeScript implementation, so an existing
 | `AI_SERVICE_PORT`                  | `8000`            | Listen port.                                                    |
 | `AI_SERVICE_TOKEN`                 | —                 | Shared bearer token. **Required** on a non-loopback host.       |
 | `LOG_LEVEL`                        | `info`            | Standard level names; `warn` is accepted.                       |
+| `LANGSMITH_TRACING`                | `false`           | Opt-in. See [LangSmith tracing](#langsmith-tracing) below.      |
+| `LANGSMITH_API_KEY`                | —                 | Required for tracing to actually happen.                        |
+| `LANGSMITH_PROJECT`                | `email-ai-platform` | Groups traces in the LangSmith UI.                             |
+| `LANGSMITH_ENDPOINT`               | —                 | Only for a self-hosted/EU LangSmith instance.                    |
 
 Two rules are enforced rather than documented:
 
@@ -139,7 +143,7 @@ call, and why `conflict_resolution` is reserved for genuine semantic ambiguity.
 ## Tests, lint and types
 
 ```bash
-.venv/bin/python -m pytest        # 198 tests
+.venv/bin/python -m pytest        # 206 tests
 .venv/bin/ruff check .            # lint
 .venv/bin/ruff format .           # format (--check in CI)
 .venv/bin/mypy                    # strict
@@ -156,6 +160,27 @@ that nothing key-shaped reaches a request, a log line or an error message.
 `test/fixtures/` — the same files the TypeScript suite validates against the Zod
 schemas — so the Pydantic models and the API's contracts cannot drift apart
 silently.
+
+## LangSmith tracing
+
+Off by default. Set `LANGSMITH_TRACING=true` and `LANGSMITH_API_KEY` (from
+https://smith.langchain.com/settings) to send every model call — the system
+prompt, the email content, the parsed output, token usage and latency — to
+LangSmith, under the `LANGSMITH_PROJECT` project. `LANGSMITH_TRACING=true`
+with no key logs a startup warning and runs untraced rather than failing.
+
+This is a separate channel from this service's own logs: the logger here
+never carries a prompt or email content (see Logging below), but LangSmith is
+exactly for inspecting that content when debugging or auditing a model's
+behaviour, so tracing sends it there deliberately. Treat a LangSmith API key
+with the same care as `OPENAI_API_KEY`.
+
+The OpenAI client is wrapped with `langsmith.wrappers.wrap_openai` once, at
+construction (`ai_service/providers/openai_provider.py`), which patches
+`responses.parse` to emit a trace per call; each call also tags its
+`operation` (`extraction`, …) as trace metadata. No tracing code runs, and
+`langsmith` makes no network call, when `LANGSMITH_TRACING` is unset — the
+test suite never sends a trace.
 
 ## Logging
 

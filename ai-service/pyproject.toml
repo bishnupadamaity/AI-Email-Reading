@@ -14,6 +14,7 @@ requires-python = ">=3.11"
 # environment, and from this file only when deliberately resolving anew.
 dependencies = [
   "fastapi==0.143.2",
+  "langsmith==0.14.11",
   "openai==3.31.0",
   "pydantic==2.14.1",
   "pydantic-settings==2.16.0",

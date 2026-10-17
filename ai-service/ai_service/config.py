@@ -83,6 +83,16 @@ class Settings(BaseSettings):
     llm_max_retries: int = Field(default=2, ge=0)
     llm_max_input_chars: int = Field(default=200_000, ge=1_000)
 
+    # --- LangSmith tracing ---------------------------------------------------
+    #: Off by default: tracing sends the system prompt, the email content and
+    #: the model's output to LangSmith, which must be an opt-in decision.
+    langsmith_tracing: bool = False
+    #: Never logged, never returned.
+    langsmith_api_key: SecretStr | None = None
+    langsmith_project: str = "email-ai-platform"
+    #: Empty uses LangSmith's public SaaS endpoint; set for self-hosted/EU.
+    langsmith_endpoint: str = ""
+
     # --- Model per AI operation -------------------------------------------
     # Left as raw strings so the defaults in `ModelRegistry` stay the single
     # source of truth. An empty variable means "unset"; see `model_overrides`.
@@ -123,6 +133,17 @@ class Settings(BaseSettings):
     def ai_configured(self) -> bool:
         """Whether an AI operation can actually run."""
         return self.llm_provider == "openai" and self.api_key is not None
+
+    @property
+    def langsmith_configured(self) -> bool:
+        """Whether tracing is both turned on and credentialed.
+
+        Mirrors `ai_configured`: an operator can set `LANGSMITH_TRACING=true`
+        without a key yet, and the service must not fail to start over it.
+        """
+        return self.langsmith_tracing and bool(
+            self.langsmith_api_key and self.langsmith_api_key.get_secret_value().strip()
+        )
 
     @property
     def model_overrides(self) -> Mapping[AiOperation, str | None]:

@@ -44,6 +44,12 @@ def create_provider(settings: Settings) -> StructuredOutputProvider:
 
     logger.info("Model routing: %s", registry.describe())
 
+    if settings.langsmith_tracing and not settings.langsmith_configured:
+        logger.warning(
+            "LANGSMITH_TRACING is true but LANGSMITH_API_KEY is unset; AI calls "
+            "will not be traced."
+        )
+
     return OpenAiStructuredProvider(
         OpenAiProviderOptions(
             api_key=api_key,
@@ -51,6 +57,14 @@ def create_provider(settings: Settings) -> StructuredOutputProvider:
             max_output_tokens=settings.llm_max_output_tokens,
             max_retries=settings.llm_max_retries,
             max_input_chars=settings.llm_max_input_chars,
+            langsmith_tracing=settings.langsmith_configured,
+            langsmith_api_key=(
+                settings.langsmith_api_key.get_secret_value()
+                if settings.langsmith_api_key
+                else None
+            ),
+            langsmith_project=settings.langsmith_project,
+            langsmith_endpoint=settings.langsmith_endpoint,
         ),
         registry,
     )

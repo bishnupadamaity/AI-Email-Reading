@@ -107,7 +107,7 @@ class TestHealth:
 
         body = client.get("/health/ready").json()
 
-        assert body["dependencies"] == {"provider": "disabled"}
+        assert body["dependencies"] == {"provider": "disabled", "tracing": "disabled"}
 
     def test_readiness_reports_the_provider_as_up_when_configured(
         self, configured: Settings
@@ -116,7 +116,18 @@ class TestHealth:
 
         body = client.get("/health/ready").json()
 
-        assert body["dependencies"] == {"provider": "up"}
+        assert body["dependencies"] == {"provider": "up", "tracing": "disabled"}
+
+    def test_readiness_reports_tracing_as_up_only_once_a_key_is_set(
+        self, settings_factory: SettingsFactory
+    ) -> None:
+        client, _ = client_for(settings_factory(langsmith_tracing=True))
+        assert client.get("/health/ready").json()["dependencies"]["tracing"] == "disabled"
+
+        client, _ = client_for(
+            settings_factory(langsmith_tracing=True, langsmith_api_key="ls-test-not-a-real-key")
+        )
+        assert client.get("/health/ready").json()["dependencies"]["tracing"] == "up"
 
     def test_readiness_reports_the_routing_table_and_what_is_implemented(
         self, configured: Settings
