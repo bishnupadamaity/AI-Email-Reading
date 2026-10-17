@@ -116,16 +116,18 @@
   --font-serif: ui-serif, 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
-  --text-2xs: 0.625rem;
-  --text-xs: 0.6875rem;
-  --text-sm: 0.75rem;
-  --text-base: 0.8125rem;
-  --text-md: 0.875rem;
-  --text-lg: 1rem;
-  --text-xl: 1.125rem;
-  --text-2xl: 1.375rem;
-  --text-3xl: 1.75rem;
-  --text-metric: 2.125rem;
+  /* Comfortable default (roughly tablet/laptop widths and up); see the
+     responsive overrides below for the compact and wide-screen tiers. */
+  --text-2xs: 0.65625rem;
+  --text-xs: 0.71875rem;
+  --text-sm: 0.78125rem;
+  --text-base: 0.84375rem;
+  --text-md: 0.90625rem;
+  --text-lg: 1.03125rem;
+  --text-xl: 1.15625rem;
+  --text-2xl: 1.40625rem;
+  --text-3xl: 1.78125rem;
+  --text-metric: 2.15625rem;
 
   --weight-normal: 400;
   --weight-medium: 500;
@@ -172,6 +174,41 @@
   --transition-base: 170ms cubic-bezier(0.2, 0, 0.3, 1);
 
   color-scheme: light;
+}
+
+/* --- responsive type scale --------------------------------------------- */
+/* The :root values above are the comfortable default. Phones get the
+   original, more compact scale back; wide desktop monitors get one step
+   larger again. Spacing and radii are untouched — only the text tokens
+   move, so layout proportions stay put at every width. */
+@media (max-width: 48rem) {
+  :root {
+    --text-2xs: 0.625rem;
+    --text-xs: 0.6875rem;
+    --text-sm: 0.75rem;
+    --text-base: 0.8125rem;
+    --text-md: 0.875rem;
+    --text-lg: 1rem;
+    --text-xl: 1.125rem;
+    --text-2xl: 1.375rem;
+    --text-3xl: 1.75rem;
+    --text-metric: 2.125rem;
+  }
+}
+
+@media (min-width: 90rem) {
+  :root {
+    --text-2xs: 0.6875rem;
+    --text-xs: 0.75rem;
+    --text-sm: 0.8125rem;
+    --text-base: 0.875rem;
+    --text-md: 0.9375rem;
+    --text-lg: 1.0625rem;
+    --text-xl: 1.1875rem;
+    --text-2xl: 1.4375rem;
+    --text-3xl: 1.8125rem;
+    --text-metric: 2.1875rem;
+  }
 }
 
 [data-theme='dark'] {

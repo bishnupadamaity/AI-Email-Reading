@@ -62,6 +62,26 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Icons (lucide-react, via its shared "lucide" class): the base size each
+   icon renders at is still set per-call, but scale every icon together at
+   the same breakpoints the type scale responds to, so the two never drift
+   out of proportion with each other. */
+.lucide {
+  transform: scale(1.04);
+}
+
+@media (max-width: 48rem) {
+  .lucide {
+    transform: scale(1);
+  }
+}
+
+@media (min-width: 90rem) {
+  .lucide {
+    transform: scale(1.08);
+  }
+}
+
 button,
 input,
 select,
