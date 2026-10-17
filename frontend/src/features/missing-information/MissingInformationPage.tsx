@@ -228,7 +228,7 @@ export function MissingInformationPage() {
                   })),
                 ]}
               />
-              <div style={{ width: '15rem' }}>
+              <div className="head-search">
                 <SearchInput
                   value={term}
                   onChange={setTerm}

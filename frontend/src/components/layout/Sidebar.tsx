@@ -1,10 +1,9 @@
-import { Moon, PanelLeftClose, PanelLeftOpen, Sun } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useCachedScanSummary } from '../../hooks/use-scan-summary';
 import { brand } from '../../lib/brand';
 import { unsupportedReason } from '../../lib/capabilities';
 import { navigation, type NavBadge, type NavItem } from '../../lib/navigation';
-import { useTheme } from '../../lib/theme/theme-context';
 import { Tooltip } from '../ui/Tooltip';
 import { BrandMark } from './BrandMark';
 
@@ -76,8 +75,7 @@ export function Sidebar({
   collapsed: boolean;
   onToggleCollapsed: () => void;
 }) {
-  const { theme, toggle: toggleTheme } = useTheme();
-  const themeLabel = theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme';
+  const collapseLabel = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
 
   return (
     <nav className="sidebar" aria-label="Primary">
@@ -91,14 +89,6 @@ export function Sidebar({
             <span className="sidebar__kicker">{brand.workspaceName}</span>
           </span>
         </NavLink>
-        <button
-          type="button"
-          className="nav-btn sidebar__collapse"
-          onClick={onToggleCollapsed}
-          aria-label="Collapse sidebar"
-        >
-          <PanelLeftClose size={15} aria-hidden="true" />
-        </button>
       </div>
 
       <div className="sidebar__nav">
@@ -113,22 +103,6 @@ export function Sidebar({
       </div>
 
       <div className="sidebar__foot">
-        {collapsed ? (
-          <span className="nav-item-wrap">
-            <Tooltip label="Expand sidebar" placement="right">
-              <button
-                type="button"
-                className="nav-btn"
-                onClick={onToggleCollapsed}
-                aria-label="Expand sidebar"
-                style={{ width: '100%' }}
-              >
-                <PanelLeftOpen size={15} aria-hidden="true" />
-              </button>
-            </Tooltip>
-          </span>
-        ) : null}
-
         <div className="sidebar__user">
           {/* No authentication exists: this names the workspace, not a signed-in user. */}
           <Tooltip label={unsupportedReason('auth')} placement="right" wrap>
@@ -140,12 +114,17 @@ export function Sidebar({
             <span className="sidebar__user-name truncate">Operations</span>
             <span className="sidebar__user-role truncate">No sign-in required</span>
           </span>
-          <Tooltip label={themeLabel} placement="right">
-            <button type="button" className="nav-btn" onClick={toggleTheme} aria-label={themeLabel}>
-              {theme === 'light' ? (
-                <Moon size={14} aria-hidden="true" />
+          <Tooltip label={collapseLabel} placement="right">
+            <button
+              type="button"
+              className="nav-btn"
+              onClick={onToggleCollapsed}
+              aria-label={collapseLabel}
+            >
+              {collapsed ? (
+                <PanelLeftOpen size={14} aria-hidden="true" />
               ) : (
-                <Sun size={14} aria-hidden="true" />
+                <PanelLeftClose size={14} aria-hidden="true" />
               )}
             </button>
           </Tooltip>

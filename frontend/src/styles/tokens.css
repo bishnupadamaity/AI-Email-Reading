@@ -91,14 +91,15 @@
   /* --- navigation rail (theme-independent) ----------------------------- */
   --nav-bg: #142c2a;
   --nav-bg-raised: #1a3835;
-  --nav-text: #dce7e2;
-  --nav-text-muted: #8ba09a;
-  --nav-text-dim: #829792;
-  --nav-hover: rgb(255 255 255 / 0.055);
-  --nav-active-bg: rgb(255 255 255 / 0.09);
+  --nav-gradient: linear-gradient(165deg, #1e4a42 0%, #142c2a 48%, #0a1816 100%);
+  --nav-text: #ffffff;
+  --nav-text-muted: rgb(255 255 255 / 0.72);
+  --nav-text-dim: rgb(255 255 255 / 0.52);
+  --nav-hover: rgb(255 255 255 / 0.09);
+  --nav-active-bg: rgb(255 255 255 / 0.14);
   --nav-active-text: #ffffff;
   --nav-marker: #3fbfae;
-  --nav-border: rgb(255 255 255 / 0.08);
+  --nav-border: rgb(255 255 255 / 0.1);
   --nav-focus: rgb(63 191 174 / 0.4);
 
   /* --- data visualisation ---------------------------------------------- */
@@ -231,6 +232,7 @@
   /* The rail goes a shade deeper than the canvas so it still reads as a rail. */
   --nav-bg: #0c1614;
   --nav-bg-raised: #152422;
+  --nav-gradient: linear-gradient(165deg, #173832 0%, #0c1614 50%, #050a09 100%);
 
   --chart-primary: #2fa89b;
   --chart-danger: #d96464;

@@ -4,7 +4,9 @@
 
 .table-scroll {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
 }
 
 .table {
@@ -538,6 +540,8 @@ a.kpi:hover {
 .dl dt {
   color: var(--text-tertiary);
   font-size: var(--text-sm);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .dl dd {
@@ -561,6 +565,7 @@ a.kpi:hover {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .mail-row {
@@ -700,6 +705,7 @@ a.kpi:hover {
   color: var(--text);
   max-height: 32rem;
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 /* Evidence: a quiet underline until selected, then a mint highlight. The
@@ -1201,6 +1207,7 @@ a.kpi:hover {
 .chart__tooltip {
   position: absolute;
   z-index: 20;
+  transform: translateX(-50%);
   padding: var(--space-2) var(--space-3);
   background: var(--forest);
   color: #f0f5f2;
@@ -1210,7 +1217,6 @@ a.kpi:hover {
   pointer-events: none;
   white-space: nowrap;
   box-shadow: var(--shadow-md);
-  transform: translate(-50%, -100%);
 }
 
 .chart__tooltip-row {
@@ -1244,10 +1250,12 @@ a.kpi:hover {
   overflow-x: auto;
   max-height: 24rem;
   overflow-y: auto;
+  overscroll-behavior: contain;
   color: var(--text-secondary);
 }
 
 .inline-code {
+  overflow-wrap: anywhere;
   padding: 1px var(--space-2);
   background: var(--bg-subtle);
   border: 1px solid var(--border-subtle);
@@ -1291,6 +1299,7 @@ a.kpi:hover {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  min-width: 0;
 }
 
 .stack--sm {

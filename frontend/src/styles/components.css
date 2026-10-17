@@ -435,9 +435,11 @@
   display: inline-flex;
 }
 
+/* Positioned from the anchor's viewport rect and portalled to <body>, so it is
+   never clipped by a panel and never part of a scroll container's extent. */
 .tooltip {
-  position: absolute;
-  z-index: 70;
+  position: fixed;
+  z-index: 90;
   padding: var(--space-2) var(--space-3);
   background: var(--forest);
   color: #f0f5f2;
@@ -446,26 +448,23 @@
   font-weight: var(--weight-normal);
   line-height: var(--leading-normal);
   white-space: nowrap;
+  max-width: 13rem;
   box-shadow: var(--shadow-md);
   pointer-events: none;
 }
 
 .tooltip--right {
-  left: calc(100% + var(--space-3));
-  top: 50%;
   transform: translateY(-50%);
 }
 
 .tooltip--top {
-  bottom: calc(100% + var(--space-2));
-  left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -100%);
 }
 
 .tooltip--wrap {
   white-space: normal;
   width: max-content;
-  max-width: 17rem;
+  max-width: 18rem;
 }
 
 /* --- empty and error states --------------------------------------------- */
@@ -597,6 +596,7 @@
 
 .notice__text {
   color: var(--text-secondary);
+  overflow-wrap: anywhere;
 }
 
 .notice--warning {

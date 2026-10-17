@@ -264,7 +264,7 @@ export function AnalysesPage() {
         <PanelHead
           title="Latest analysis per email"
           actions={
-            <div style={{ width: '18rem' }}>
+            <div className="head-search">
               <SearchInput
                 value={term}
                 onChange={setTerm}

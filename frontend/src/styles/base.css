@@ -10,6 +10,15 @@ body,
   height: 100%;
 }
 
+/* The shell is a fixed-height grid with its own scroll regions, so the document
+   must never scroll. Without this the inner scrollers chain into the document
+   and macOS rubber-bands the whole app at the end of every scroll. */
+html,
+body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   margin: 0;
   background: var(--bg-app);

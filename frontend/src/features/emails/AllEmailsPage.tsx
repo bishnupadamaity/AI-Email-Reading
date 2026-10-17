@@ -174,7 +174,7 @@ export function AllEmailsPage() {
           meta={data ? `${data.total} total` : undefined}
           actions={
             <div className="inline inline--sm">
-              <div style={{ width: '18rem' }}>
+              <div className="head-search">
                 <SearchInput
                   value={term}
                   onChange={(value) =>

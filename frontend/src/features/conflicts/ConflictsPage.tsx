@@ -206,7 +206,7 @@ export function ConflictsPage() {
                   })),
                 ]}
               />
-              <div style={{ width: '16rem' }}>
+              <div className="head-search">
                 <SearchInput
                   value={term}
                   onChange={setTerm}

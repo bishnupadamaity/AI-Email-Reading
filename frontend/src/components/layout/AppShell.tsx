@@ -3,9 +3,11 @@ import {
   FlaskConical,
   GitCompareArrows,
   Menu,
+  Moon,
   Search,
   Settings as SettingsIcon,
   SquareCheck,
+  Sun,
   TriangleAlert,
   X,
 } from 'lucide-react';
@@ -18,6 +20,7 @@ import { unsupportedReason } from '../../lib/capabilities';
 import { useDemoMode } from '../../lib/demo/demo-mode-context';
 import { webEnv } from '../../lib/env';
 import { navigation, routes } from '../../lib/navigation';
+import { useTheme } from '../../lib/theme/theme-context';
 import { Button } from '../ui/Button';
 import { Popover } from '../ui/Popover';
 import { SearchInput, Switch } from '../ui/inputs';
@@ -87,6 +90,19 @@ function EnvPill() {
         <span className="env-pill__dot" aria-hidden="true" />
         <span className="env-pill__label">{label}</span>
       </span>
+    </Tooltip>
+  );
+}
+
+function ThemeToggle() {
+  const { theme, toggle } = useTheme();
+  const label = theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme';
+
+  return (
+    <Tooltip label={label}>
+      <button type="button" className="icon-btn" onClick={toggle} aria-label={label}>
+        {theme === 'light' ? <Moon size={15} aria-hidden="true" /> : <Sun size={15} aria-hidden="true" />}
+      </button>
     </Tooltip>
   );
 }
@@ -342,6 +358,7 @@ export function AppShell() {
               onClick={() => setSearchOpen((value) => !value)}
               aria-label={searchOpen ? 'Close search' : 'Search'}
             />
+            <ThemeToggle />
             <EnvPill />
             <NotificationsMenu />
             {/* Page-owned primary actions land here. */}

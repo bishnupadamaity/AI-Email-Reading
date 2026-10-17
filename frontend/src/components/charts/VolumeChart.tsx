@@ -186,8 +186,13 @@ export function VolumeChart({ points }: { points: readonly VolumePoint[] }) {
         <div
           className="chart__tooltip"
           style={{
-            left: `${((PAD.left + (hovered + 0.5) * bandWidth) / VIEW_WIDTH) * 100}%`,
-            top: `${(PAD.top / VIEW_HEIGHT) * 100}%`,
+            // Clamped inside the plot: the panel clips its overflow, so a
+            // tooltip that reached past the edge would be cut off.
+            left: `${Math.min(
+              Math.max(((PAD.left + (hovered + 0.5) * bandWidth) / VIEW_WIDTH) * 100, 15),
+              85,
+            )}%`,
+            top: 0,
           }}
         >
           <strong>{formatDayMonth(`${hoveredPoint.day}T12:00:00.000Z`)}</strong>

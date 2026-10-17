@@ -116,7 +116,7 @@ export function ActivityLogPage() {
           title="Events"
           meta={`${visible.length} shown`}
           actions={
-            <div style={{ width: '18rem' }}>
+            <div className="head-search">
               <SearchInput
                 value={term}
                 onChange={setTerm}

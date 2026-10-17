@@ -18,7 +18,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  background: var(--nav-bg);
+  background: var(--nav-gradient);
   color: var(--nav-text);
 }
 
@@ -77,11 +77,6 @@
   color: var(--nav-text-dim);
 }
 
-.sidebar__collapse {
-  margin-left: auto;
-  flex: none;
-}
-
 /* Rail buttons need their own treatment: the global button tokens are for
    light surfaces. */
 .nav-btn {
@@ -114,6 +109,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--space-3) var(--space-3) var(--space-6);
   display: flex;
   flex-direction: column;
@@ -169,23 +165,10 @@
   outline-offset: -1px;
 }
 
-/* Selected: a lifted fill plus a short mint marker. Restrained, but
-   unmistakable at a glance down the rail. */
+/* Selected: a lifted fill, unmistakable at a glance down the rail. */
 .nav-item[aria-current='page'] {
   background: var(--nav-active-bg);
   color: var(--nav-active-text);
-}
-
-.nav-item[aria-current='page']::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2px;
-  height: 1.0625rem;
-  border-radius: 0 2px 2px 0;
-  background: var(--nav-marker);
 }
 
 .nav-item[aria-current='page'] .nav-item__icon {
@@ -311,8 +294,7 @@
 .shell[data-collapsed='true'] .sidebar__wordmark,
 .shell[data-collapsed='true'] .nav-item__label,
 .shell[data-collapsed='true'] .nav-group__label,
-.shell[data-collapsed='true'] .sidebar__user-meta,
-.shell[data-collapsed='true'] .sidebar__collapse {
+.shell[data-collapsed='true'] .sidebar__user-meta {
   display: none;
 }
 
@@ -333,7 +315,7 @@
 
 .shell[data-collapsed='true'] .nav-item {
   justify-content: center;
-  padding: 0;
+  padding: 0 var(--space-2);
 }
 
 .shell[data-collapsed='true'] .nav-item__badge {
@@ -344,11 +326,14 @@
   height: 0.875rem;
   padding: 0 2px;
   font-size: 9px;
-  border: 1.5px solid var(--nav-bg);
+  border: 1.5px solid rgb(6 14 13 / 0.55);
 }
 
 .shell[data-collapsed='true'] .sidebar__user {
+  flex-direction: column;
   justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
 }
 
 .nav-item-wrap {
@@ -356,12 +341,16 @@
 }
 
 /* A collapsed rail item is wrapped in a tooltip anchor, which must not shrink
-   the hit area it wraps. */
+   the hit area it wraps. The inner span's `display: inline-flex` is set
+   inline by the Tooltip component, which beats the `display: block` here —
+   it keeps the width, but defaults to left-aligning its flex child, so the
+   icon needs an explicit `justify-content` to stay centered. */
 .sidebar .tooltip-anchor,
 .sidebar .tooltip-anchor > span,
 .nav-item-wrap {
   display: block;
   width: 100%;
+  justify-content: center;
 }
 
 .sidebar__user .tooltip-anchor,
@@ -464,8 +453,9 @@
 
 .topbar__search {
   margin-left: auto;
-  width: min(20rem, 30vw);
-  flex: none;
+  flex: 1 1 10rem;
+  min-width: 0;
+  max-width: 20rem;
 }
 
 .topbar__actions {
@@ -568,8 +558,11 @@
 
 .page {
   flex: 1;
+  min-width: 0;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .page--fill {
@@ -584,6 +577,7 @@
   flex-direction: column;
   gap: var(--space-6);
   max-width: 94rem;
+  min-width: 0;
 }
 
 .page-header {
@@ -622,6 +616,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  min-width: 0;
 }
 
 .section__head {
@@ -670,10 +665,19 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-3) var(--space-4);
   padding: var(--space-3) var(--space-5);
   border-bottom: 1px solid var(--border-subtle);
   min-height: 2.75rem;
+  flex-wrap: wrap;
+}
+
+/* A search field in a panel head or toolbar: flexible, never a fixed width
+   that overflows the panel it sits in. */
+.head-search {
+  flex: 1 1 11rem;
+  min-width: 0;
+  max-width: 18rem;
 }
 
 .panel__title {
@@ -689,6 +693,7 @@
 
 .panel__body {
   padding: var(--space-5);
+  min-width: 0;
 }
 
 .panel__body--flush {
@@ -702,6 +707,7 @@
   font-size: var(--text-sm);
   color: var(--text-secondary);
   line-height: var(--leading-relaxed);
+  overflow-wrap: anywhere;
 }
 
 /* --- grids -------------------------------------------------------------- */
@@ -745,8 +751,11 @@
 }
 
 .split__detail {
+  min-width: 0;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   background: var(--bg-app);
 }
 
@@ -759,8 +768,11 @@
 
 .workspace__primary,
 .workspace__secondary {
+  min-width: 0;
   min-height: 0;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .workspace__secondary {
