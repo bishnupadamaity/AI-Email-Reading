@@ -1,0 +1,248 @@
+/**
+ * Design tokens — MailPilot AI.
+ *
+ * The identity is an "editorial operations console": a deep forest navigation
+ * rail, a warm ivory canvas, white working surfaces, and teal reserved for
+ * actions and selection. Status colour is spent sparingly: amber means
+ * attention, red means a real failure or contradiction, green means verified.
+ *
+ * Three rules hold the system together:
+ *
+ * 1. **The navigation rail has its own scale.** `--nav-*` never changes with
+ *    the light/dark theme, because the rail is always dark — so nav contrast
+ *    is reasoned about once.
+ * 2. **Status text and status fill are different tokens.** `--warning` is
+ *    dark enough to read as text; `--warning-strong` is the amber that only
+ *    ever appears as a fill, dot or rule. Mixing them is how status UI ends up
+ *    illegible.
+ * 3. **Chart hues are separate from UI hues** (`--chart-*`), validated for
+ *    colour-vision deficiency against the surface they sit on. The brand teal
+ *    is slightly under the chroma floor for a data fill, so charts use a
+ *    purer teal than buttons do.
+ */
+
+:root {
+  /* --- brand ----------------------------------------------------------- */
+  --forest: #142c2a;
+  --teal: #087e75;
+  --mint: #e8f3ef;
+  --ivory: #f5f1e8;
+
+  /* --- canvas and surfaces --------------------------------------------- */
+  --bg-app: #f5f1e8;
+  --bg-subtle: #eeeae0;
+  --surface: #ffffff;
+  --surface-sunken: #faf8f3;
+  --surface-hover: #f7f5ef;
+  --surface-active: #f0eee6;
+  --surface-inverse: #142c2a;
+
+  --border: #dfe5df;
+  --border-strong: #cbd4cb;
+  /* Inner dividers, lighter than the outer border so nesting stays quiet. */
+  --border-subtle: #eaeee8;
+  --border-focus: #087e75;
+
+  --text: #202825;
+  --text-secondary: #5c6661;
+  --text-tertiary: #6f7a74;
+  --text-inverse: #f5f1e8;
+
+  /* --- accent: primary actions and selection --------------------------- */
+  --accent: #087e75;
+  --accent-hover: #066b63;
+  --accent-active: #05564f;
+  --accent-soft: #e8f3ef;
+  --accent-soft-hover: #dbebe5;
+  --accent-border: #bbd9d2;
+  --accent-text: #066b63;
+  --accent-on: #ffffff;
+
+  /* --- status ---------------------------------------------------------- */
+  --success: #156f4e;
+  --success-strong: #1c8a62;
+  --success-soft: #e7f3ec;
+  --success-border: #bcdcca;
+
+  --warning: #8a5a12;
+  --warning-strong: #e5a34d;
+  --warning-soft: #fbf2e2;
+  --warning-border: #ebd3a8;
+
+  --danger: #b23c3c;
+  --danger-strong: #c84646;
+  --danger-soft: #fbecea;
+  --danger-border: #edc3bf;
+
+  /* Informational sits in the teal family: the palette carries no blue. */
+  --info: #0a6f67;
+  --info-soft: #e6f1ee;
+  --info-border: #bdd8d2;
+
+  --neutral: #69736e;
+  --neutral-soft: #f0eee6;
+  --neutral-border: #dfe5df;
+
+  /* Demo mode borrows amber and always carries the word "Demo" with it. */
+  --demo: #8a5a12;
+  --demo-soft: #fbf2e2;
+  --demo-border: #ebd3a8;
+
+  /* --- navigation rail (theme-independent) ----------------------------- */
+  --nav-bg: #142c2a;
+  --nav-bg-raised: #1a3835;
+  --nav-text: #dce7e2;
+  --nav-text-muted: #8ba09a;
+  --nav-text-dim: #829792;
+  --nav-hover: rgb(255 255 255 / 0.055);
+  --nav-active-bg: rgb(255 255 255 / 0.09);
+  --nav-active-text: #ffffff;
+  --nav-marker: #3fbfae;
+  --nav-border: rgb(255 255 255 / 0.08);
+  --nav-focus: rgb(63 191 174 / 0.4);
+
+  /* --- data visualisation ---------------------------------------------- */
+  --chart-primary: #00897d;
+  --chart-danger: #c84646;
+  --chart-ghost: #cbd4cb;
+  --chart-ghost-fill: #f2f0e9;
+  --chart-grid: #eaeee8;
+
+  /* --- typography ------------------------------------------------------ */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* Display only: page titles and dialog titles. Never body or numerals. */
+  --font-serif: ui-serif, 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  --text-2xs: 0.625rem;
+  --text-xs: 0.6875rem;
+  --text-sm: 0.75rem;
+  --text-base: 0.8125rem;
+  --text-md: 0.875rem;
+  --text-lg: 1rem;
+  --text-xl: 1.125rem;
+  --text-2xl: 1.375rem;
+  --text-3xl: 1.75rem;
+  --text-metric: 2.125rem;
+
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  --tracking-label: 0.08em;
+
+  /* --- spacing --------------------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.375rem;
+  --space-3: 0.5rem;
+  --space-4: 0.75rem;
+  --space-5: 1rem;
+  --space-6: 1.25rem;
+  --space-7: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* --- radii: deliberately small and few ------------------------------- */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-pill: 999px;
+
+  /* --- shadows: warm-tinted, used only where hierarchy needs it -------- */
+  --shadow-xs: 0 1px 1px rgb(20 44 42 / 0.04);
+  --shadow-sm: 0 1px 2px rgb(20 44 42 / 0.06);
+  --shadow-md: 0 6px 16px -4px rgb(20 44 42 / 0.1), 0 2px 4px rgb(20 44 42 / 0.05);
+  --shadow-lg: 0 18px 40px -12px rgb(20 44 42 / 0.2), 0 4px 10px rgb(20 44 42 / 0.08);
+  --shadow-focus: 0 0 0 3px rgb(8 126 117 / 0.16);
+
+  /* --- layout ---------------------------------------------------------- */
+  --sidebar-width: 15rem;
+  --sidebar-width-collapsed: 3.25rem;
+  --topbar-height: 3.5rem;
+
+  --transition-fast: 110ms cubic-bezier(0.2, 0, 0.3, 1);
+  --transition-base: 170ms cubic-bezier(0.2, 0, 0.3, 1);
+
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --bg-app: #101614;
+  --bg-subtle: #151d1a;
+  --surface: #1a201e;
+  --surface-sunken: #161c1a;
+  --surface-hover: #212927;
+  --surface-active: #28312e;
+  --surface-inverse: #e6ebe8;
+
+  --border: #2b3734;
+  --border-strong: #3a4844;
+  --border-subtle: #232c2a;
+  --border-focus: #3fbfae;
+
+  --text: #e6ebe8;
+  --text-secondary: #9da9a4;
+  --text-tertiary: #76817c;
+  --text-inverse: #142c2a;
+
+  --accent: #2fa89b;
+  --accent-hover: #3cbbad;
+  --accent-active: #4ac9ba;
+  --accent-soft: #17302c;
+  --accent-soft-hover: #1d3b36;
+  --accent-border: #2c4f4a;
+  --accent-text: #6fccbe;
+  --accent-on: #08201e;
+
+  --success: #5cc48d;
+  --success-strong: #4cb67a;
+  --success-soft: #142a20;
+  --success-border: #274935;
+
+  --warning: #dda75a;
+  --warning-strong: #e5a34d;
+  --warning-soft: #2a2316;
+  --warning-border: #4b3e24;
+
+  --danger: #e38080;
+  --danger-strong: #d96464;
+  --danger-soft: #2c1a1a;
+  --danger-border: #4e3030;
+
+  --info: #6fccbe;
+  --info-soft: #17302c;
+  --info-border: #2c4f4a;
+
+  --neutral: #9da9a4;
+  --neutral-soft: #212927;
+  --neutral-border: #333d3a;
+
+  --demo: #dda75a;
+  --demo-soft: #2a2316;
+  --demo-border: #4b3e24;
+
+  /* The rail goes a shade deeper than the canvas so it still reads as a rail. */
+  --nav-bg: #0c1614;
+  --nav-bg-raised: #152422;
+
+  --chart-primary: #2fa89b;
+  --chart-danger: #d96464;
+  --chart-ghost: #3a4844;
+  --chart-ghost-fill: #1e2624;
+  --chart-grid: #232c2a;
+
+  --shadow-xs: 0 1px 1px rgb(0 0 0 / 0.3);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.35);
+  --shadow-md: 0 6px 16px -4px rgb(0 0 0 / 0.45), 0 2px 4px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 18px 40px -12px rgb(0 0 0 / 0.6), 0 4px 10px rgb(0 0 0 / 0.4);
+  --shadow-focus: 0 0 0 3px rgb(63 191 174 / 0.22);
+
+  color-scheme: dark;
+}
